@@ -1,0 +1,17 @@
+Create 2 links in the footer of the landing page @templates/landing.html :
+1. Terms and Conditions
+2. Privacy Policy
+
+Add redirection for these pages to # as there are no actual Terms and Conditions and Privacy Policy pages existing for now. Keep the design simple. 
+Do not make any other change to the page.
+
+Move the footer link Pivacy Policy below the Terms and Conditions and center align both
+
+Create a new Terms and Conditions page for the Terms and Conditions footer link at @templates/landing.html. 
+Add some dummy content on the page with whatever you understand about this project. 
+Keep the css of the page aligned with the theme of the website
+
+Create a new Privacy Policy page for the Privacy Policy footer link at @templates/landing.html. 
+Add some dummy content on the page with whatever you understand about this project. 
+Keep the css of the page aligned with the theme of the website
+
