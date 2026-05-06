@@ -15,3 +15,14 @@ Create a new Privacy Policy page for the Privacy Policy footer link at @template
 Add some dummy content on the page with whatever you understand about this project. 
 Keep the css of the page aligned with the theme of the website
 
+Modify the Hero section to make it similar to the attached image
+
+
+ move free to use label and everything with it little towards    
+top so that the table is also accomodated in the first screen     
+without scrolling requirement
+
+Add operation on the button click "See how it works". I want to open a pop up dialog which will play a youtube video. 
+You can keep any video url, i will modfy it later. Add a close button on it. 
+On clicking on close button or clicking anywhere outside the dialog should close the dailog. 
+On closing video should completely stop and not keep running in the background.
