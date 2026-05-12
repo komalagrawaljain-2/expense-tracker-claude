@@ -26,3 +26,8 @@ Add operation on the button click "See how it works". I want to open a pop up di
 You can keep any video url, i will modfy it later. Add a close button on it. 
 On clicking on close button or clicking anywhere outside the dialog should close the dailog. 
 On closing video should completely stop and not keep running in the background.
+
+/plan
+Read .claude/specs/database_setup.md and the existing database/db.py and app.py, then generate an implementation plan.
+Save this plan to .claude/plans/01-database-setup.md
+
