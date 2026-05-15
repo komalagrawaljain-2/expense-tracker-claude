@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
-from database.db import get_db, init_db, seed_db, create_user
+from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-change-in-prod"
@@ -45,8 +45,23 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+
+        if not email or not password:
+            return render_template("login.html", error="All fields are required.")
+
+        user = get_user_by_email(email)
+        if user is None or not check_password_hash(user["password_hash"], password):
+            return render_template("login.html", error="Invalid email or password.")
+
+        session["user_id"] = user["id"]
+        session["user_name"] = user["name"]
+        return redirect(url_for("landing"))
+
     return render_template("login.html")
 
 
@@ -66,7 +81,8 @@ def privacy():
 
 @app.route("/logout")
 def logout():
-    return "Logout — coming in Step 3"
+    session.clear()
+    return redirect(url_for("landing"))
 
 
 @app.route("/profile")
