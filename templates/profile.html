@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="profile-container">
+
+        <!-- User info card -->
+        <div class="profile-header-card">
+            <div class="profile-avatar">{{ user.initials }}</div>
+            <div class="profile-identity">
+                <h1 class="profile-name">{{ user.name }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-since">
+                    <i data-lucide="calendar"></i>
+                    Member since {{ user.member_since }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Summary stats row -->
+        <div class="profile-stats">
+            <div class="profile-stat-card">
+                <div class="profile-stat-icon">
+                    <i data-lucide="wallet"></i>
+                </div>
+                <div class="profile-stat-body">
+                    <span class="profile-stat-label">Total Spent</span>
+                    <span class="profile-stat-value">₹{{ "%.2f"|format(stats.total_spent) }}</span>
+                </div>
+            </div>
+            <div class="profile-stat-card">
+                <div class="profile-stat-icon">
+                    <i data-lucide="receipt"></i>
+                </div>
+                <div class="profile-stat-body">
+                    <span class="profile-stat-label">Transactions</span>
+                    <span class="profile-stat-value">{{ stats.transaction_count }}</span>
+                </div>
+            </div>
+            <div class="profile-stat-card">
+                <div class="profile-stat-icon">
+                    <i data-lucide="tag"></i>
+                </div>
+                <div class="profile-stat-body">
+                    <span class="profile-stat-label">Top Category</span>
+                    <span class="profile-stat-value">{{ stats.top_category }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+
+            <!-- Transaction history -->
+            <div class="profile-card">
+                <h2 class="profile-card-title">
+                    <i data-lucide="clock"></i>
+                    Transaction History
+                </h2>
+                <div class="profile-table-wrap">
+                    <table class="profile-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th class="profile-table-amount">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tx in transactions %}
+                            <tr>
+                                <td class="profile-table-date">{{ tx.date }}</td>
+                                <td>{{ tx.description }}</td>
+                                <td>
+                                    <span class="profile-badge profile-badge--{{ tx.category | lower | replace(' ', '-') }}">
+                                        {{ tx.category }}
+                                    </span>
+                                </td>
+                                <td class="profile-table-amount">₹{{ "%.2f"|format(tx.amount) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Category breakdown -->
+            <div class="profile-card">
+                <h2 class="profile-card-title">
+                    <i data-lucide="pie-chart"></i>
+                    Category Breakdown
+                </h2>
+                <div class="profile-categories">
+                    {% for cat in categories %}
+                    <div class="profile-cat-row">
+                        <div class="profile-cat-meta">
+                            <span class="profile-cat-name">{{ cat.name }}</span>
+                            <span class="profile-cat-amount">₹{{ "%.2f"|format(cat.total) }}</span>
+                        </div>
+                        <div class="profile-bar-track">
+                            <div class="profile-bar" style="width: {{ cat.pct }}%"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

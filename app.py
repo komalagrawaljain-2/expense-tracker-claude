@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import sqlite3
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
 
@@ -9,6 +10,19 @@ app.secret_key = "dev-secret-change-in-prod"
 with app.app_context():
     init_db()
     seed_db()
+
+
+# ------------------------------------------------------------------ #
+# Helpers                                                             #
+# ------------------------------------------------------------------ #
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("user_id"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # ------------------------------------------------------------------ #
@@ -60,7 +74,7 @@ def login():
 
         session["user_id"] = user["id"]
         session["user_name"] = user["name"]
-        return redirect(url_for("landing"))
+        return redirect(url_for("profile"))
 
     return render_template("login.html")
 
@@ -86,8 +100,47 @@ def logout():
 
 
 @app.route("/profile")
+@login_required
 def profile():
-    return "Profile page — coming in Step 4"
+    user = {
+        "name": "Demo User",
+        "email": "demo@spendly.com",
+        "member_since": "2026-01-15",
+        "initials": "DU",
+    }
+
+    stats = {
+        "total_spent": 351.24,
+        "transaction_count": 8,
+        "top_category": "Food",
+    }
+
+    transactions = [
+        {"date": "2026-05-15", "description": "Coffee and snacks",  "category": "Food",          "amount": 8.75},
+        {"date": "2026-05-13", "description": "Miscellaneous",      "category": "Other",         "amount": 15.00},
+        {"date": "2026-05-11", "description": "Clothing",           "category": "Shopping",      "amount": 89.99},
+        {"date": "2026-05-09", "description": "Movie tickets",      "category": "Entertainment", "amount": 25.00},
+        {"date": "2026-05-07", "description": "Pharmacy",           "category": "Health",        "amount": 35.00},
+        {"date": "2026-05-05", "description": "Electricity bill",   "category": "Bills",         "amount": 120.00},
+        {"date": "2026-05-03", "description": "Monthly bus pass",   "category": "Transport",     "amount": 45.00},
+        {"date": "2026-05-01", "description": "Lunch at cafe",      "category": "Food",          "amount": 12.50},
+    ]
+
+    categories = [
+        {"name": "Bills",         "total": 120.00, "pct": 34},
+        {"name": "Shopping",      "total": 89.99,  "pct": 26},
+        {"name": "Transport",     "total": 45.00,  "pct": 13},
+        {"name": "Health",        "total": 35.00,  "pct": 10},
+        {"name": "Entertainment", "total": 25.00,  "pct": 7},
+        {"name": "Food",          "total": 21.25,  "pct": 6},
+        {"name": "Other",         "total": 15.00,  "pct": 4},
+    ]
+
+    return render_template("profile.html",
+                           user=user,
+                           stats=stats,
+                           transactions=transactions,
+                           categories=categories)
 
 
 @app.route("/expenses/add")
