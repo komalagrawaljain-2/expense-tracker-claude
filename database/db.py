@@ -88,3 +88,28 @@ def get_user_by_email(email):
     ).fetchone()
     conn.close()
     return user
+
+
+def get_user_by_id(user_id):
+    conn = get_db()
+    user = conn.execute(
+        "SELECT * FROM users WHERE id = ?", (user_id,)
+    ).fetchone()
+    conn.close()
+    return user
+
+
+def update_user(user_id, name, email, password_hash):
+    conn = get_db()
+    if password_hash is not None:
+        conn.execute(
+            "UPDATE users SET name = ?, email = ?, password_hash = ? WHERE id = ?",
+            (name, email, password_hash, user_id),
+        )
+    else:
+        conn.execute(
+            "UPDATE users SET name = ?, email = ? WHERE id = ?",
+            (name, email, user_id),
+        )
+    conn.commit()
+    conn.close()
